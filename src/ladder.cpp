@@ -1,4 +1,5 @@
 #include "ladder.h"
+#include <algorithm>
 
 bool edit_distance_within(const string &str1, const string &str2, int d)
 {
@@ -13,7 +14,7 @@ bool edit_distance_within(const string &str1, const string &str2, int d)
     for (int i = 0; i < str1_size; ++i)
     {
         curr_distances[0] = i + 1;
-        for (int j = 0; j < str2_size; ++j)
+        for (int j = max(0, i - d); j < str2_size; ++j)
         {
             int deletionCost = prev_distances[j + 1] + 1;
             int insertionCost = curr_distances[j] + 1;
@@ -25,6 +26,8 @@ bool edit_distance_within(const string &str1, const string &str2, int d)
 
             curr_distances[j + 1] = min(min(deletionCost, insertionCost), substitutionCost);
         }
+        if (*min_element(curr_distances.begin(), curr_distances.end()) > d)
+            return false;
         prev_distances = curr_distances;
     }
     return prev_distances[str2_size] <= d;
