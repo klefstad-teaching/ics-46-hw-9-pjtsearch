@@ -2,18 +2,32 @@
 
 bool edit_distance_within(const string &str1, const string &str2, int d)
 {
-    // subtract from d each time, and then follow Levenshtein
-    if (d < 0)
-        return false;
-    if (str1.size() == 0)
-        return int(str2.size()) <= d;
-    if (str2.size() == 0)
-        return int(str1.size()) <= d;
-    if (str1[0] == str2[0])
-        return edit_distance_within(str1.substr(1), str2.substr(1), d);
-    return edit_distance_within(str1.substr(1), str2, d - 1) ||
-           edit_distance_within(str1, str2.substr(1), d - 1) ||
-           edit_distance_within(str1.substr(1), str2.substr(1), d - 1);
+    int str1_size = str1.size();
+    int str2_size = str2.size();
+
+    vector<int> prev_distances(str2_size + 1, 0);
+    for (int i = 0; i <= str2_size; ++i) // initialize first row
+        prev_distances[i] = i;
+
+    vector<int> curr_distances(str2_size + 1, 0);
+    for (int i = 0; i < str1_size; ++i)
+    {
+        curr_distances[0] = i + 1;
+        for (int j = 0; j < str2_size; ++j)
+        {
+            int deletionCost = prev_distances[j + 1] + 1;
+            int insertionCost = curr_distances[j] + 1;
+            int substitutionCost;
+            if (str1[i] == str2[j])
+                substitutionCost = prev_distances[j];
+            else
+                substitutionCost = prev_distances[j] + 1;
+
+            curr_distances[j + 1] = min(min(deletionCost, insertionCost), substitutionCost);
+        }
+        prev_distances = curr_distances;
+    }
+    return prev_distances[str2_size] <= d;
 }
 
 bool is_adjacent(const string &word1, const string &word2)
