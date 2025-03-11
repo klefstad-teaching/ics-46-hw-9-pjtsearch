@@ -23,3 +23,13 @@ TEST(is_adjacent, full_test)
   EXPECT_FALSE(is_adjacent("nn", "ab"));
   EXPECT_FALSE(is_adjacent("aaa", "ab"));
 }
+
+TEST(generate_word_ladder, full_test)
+{
+  set<string> word_list = {"cats", "car", "end", "cade", "cate", "date", "data"};
+  vector<string> expected = {"code", "cade", "cate", "date", "data"};
+  ASSERT_EQ(generate_word_ladder("code", "data", word_list), expected);
+  set<string> word_list2 = {"cats", "car", "end", "cade", "cate", "data"};
+  vector<string> expected2 = {};
+  ASSERT_EQ(generate_word_ladder("code", "data", word_list), expected);
+}
