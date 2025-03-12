@@ -24,6 +24,7 @@ TEST(is_adjacent, full_test)
   EXPECT_FALSE(is_adjacent("aaa", "ab"));
   EXPECT_TRUE(is_adjacent("appl", "apple"));
   EXPECT_TRUE(is_adjacent("apple", "bapple"));
+  EXPECT_TRUE(is_adjacent("apple", "apple"));
 }
 
 TEST(generate_word_ladder, full_test)

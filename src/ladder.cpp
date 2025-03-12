@@ -71,7 +71,7 @@ bool is_adjacent(const string &word1, const string &word2)
         }
     }
 
-    return edits == 1;
+    return edits <= 1;
 }
 
 vector<string> generate_word_ladder(const string &begin_word, const string &end_word, const set<string> &word_list)
