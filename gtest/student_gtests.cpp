@@ -36,3 +36,19 @@ TEST(generate_word_ladder, full_test)
   vector<string> expected2 = {};
   ASSERT_EQ(generate_word_ladder("code", "data", word_list), expected);
 }
+
+TEST(dijkstra_shortest_path, full_test)
+{
+  Graph graph;
+  file_to_graph("./src/small.txt", graph);
+  vector<int> previous;
+  vector<int> distances = dijkstra_shortest_path(graph, 0, previous);
+  vector<int> expected0 = {0};
+  ASSERT_EQ(extract_shortest_path(distances, previous, 0), expected0);
+  vector<int> expected1 = {0, 3, 1};
+  ASSERT_EQ(extract_shortest_path(distances, previous, 1), expected1);
+  vector<int> expected2 = {0, 3, 1, 2};
+  ASSERT_EQ(extract_shortest_path(distances, previous, 2), expected2);
+  vector<int> expected3 = {0, 3};
+  ASSERT_EQ(extract_shortest_path(distances, previous, 3), expected3);
+}
