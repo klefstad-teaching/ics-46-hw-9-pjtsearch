@@ -5,6 +5,8 @@ bool edit_distance_within(const string &str1, const string &str2, int d)
 {
     int str1_size = str1.size();
     int str2_size = str2.size();
+    if (abs(str1_size - str2_size) > d)
+        return false;
 
     vector<int> prev_distances(str2_size + 1, 0);
     for (int i = 0; i <= str2_size; ++i) // initialize first row
@@ -14,7 +16,7 @@ bool edit_distance_within(const string &str1, const string &str2, int d)
     for (int i = 0; i < str1_size; ++i)
     {
         curr_distances[0] = i + 1;
-        for (int j = max(0, i - d); j < str2_size; ++j)
+        for (int j = 0; j < str2_size; ++j)
         {
             int deletionCost = prev_distances[j + 1] + 1;
             int insertionCost = curr_distances[j] + 1;
@@ -26,8 +28,6 @@ bool edit_distance_within(const string &str1, const string &str2, int d)
 
             curr_distances[j + 1] = min(min(deletionCost, insertionCost), substitutionCost);
         }
-        if (*min_element(curr_distances.begin(), curr_distances.end()) > d)
-            return false;
         prev_distances = curr_distances;
     }
     return prev_distances[str2_size] <= d;
@@ -35,9 +35,43 @@ bool edit_distance_within(const string &str1, const string &str2, int d)
 
 bool is_adjacent(const string &word1, const string &word2)
 {
-    if (abs(int(word1.size()) - int(word2.size())) > 1)
+    int word1_size = word1.size();
+    int word2_size = word2.size();
+
+    if (abs(word1_size - word2_size) > 1)
         return false;
-    return edit_distance_within(word1, word2, 1);
+
+    int edits = 0, word1_i = 0, word2_i = 0;
+    while (word1_i < word1_size || word2_i < word2_size)
+    {
+        if (word1_i >= word1_size) // word1 overflowed
+        {
+            ++edits;
+            ++word2_i;
+        }
+        else if (word2_i >= word2_size) // word2 overflowed
+        {
+            ++edits;
+            ++word1_i;
+        }
+        else if (word1[word1_i] != word2[word2_i]) // compare when chars are different
+        {
+            if (edits >= 1)
+                return false;
+            if (word1_size >= word2_size)
+                ++word1_i;
+            if (word1_size <= word2_size)
+                ++word2_i;
+            ++edits;
+        }
+        else // move on when chars are the same
+        {
+            ++word1_i;
+            ++word2_i;
+        }
+    }
+
+    return edits == 1;
 }
 
 vector<string> generate_word_ladder(const string &begin_word, const string &end_word, const set<string> &word_list)
